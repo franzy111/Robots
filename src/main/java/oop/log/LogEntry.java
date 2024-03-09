@@ -1,4 +1,4 @@
-package log;
+package oop.log;
 
 public class LogEntry
 {
