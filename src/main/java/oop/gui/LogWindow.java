@@ -1,8 +1,7 @@
 package oop.gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
+import java.awt.*;
+import java.util.Map;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -10,10 +9,14 @@ import javax.swing.JPanel;
 import oop.log.LogChangeListener;
 import oop.log.LogEntry;
 import oop.log.LogWindowSource;
+import oop.serialization.StateRestoreManager;
+import oop.serialization.StateSaverManager;
+import oop.serialization.Storable;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener {
-    private LogWindowSource m_logSource;
-    private TextArea m_logContent;
+public class LogWindow extends JInternalFrame implements LogChangeListener, Storable {
+    private final LogWindowSource m_logSource;
+    private final TextArea m_logContent;
+    private final String name = "LogWindow";
 
     public LogWindow(LogWindowSource logSource) {
         super("Протокол работы", true, true, true, true);
@@ -41,5 +44,17 @@ public class LogWindow extends JInternalFrame implements LogChangeListener {
     @Override
     public void onLogChanged() {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+
+    @Override
+    public void save(Map<String, String> states) {
+        StateSaverManager stateSaverManager = new StateSaverManager(name);
+        stateSaverManager.save(states, this);
+    }
+
+    @Override
+    public void restore(Map<String, String> states) {
+        StateRestoreManager stateRestoreManager = new StateRestoreManager(name);
+        stateRestoreManager.restore(states, this);
     }
 }
