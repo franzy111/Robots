@@ -1,6 +1,5 @@
 package oop.serialization;
 
-import java.awt.*;
 import java.io.*;
 import java.util.List;
 import java.util.HashMap;
@@ -9,7 +8,7 @@ import java.util.Map;
 /**
  * Класс для сохранения и загрузки состояния компонентов
  */
-public class State {
+public class StateIO {
     /**
      * Путь к файлу конфигурации
      */
@@ -18,7 +17,7 @@ public class State {
     /**
      * Конструктор класса
      */
-    public State() {
+    public StateIO() {
         this.confPath = new File(System.getProperty("user.home") +
                 File.separator + "States.conf");
     }
@@ -28,14 +27,11 @@ public class State {
      *
      * @param windows Список компонентов, состояние которых нужно сохранить
      */
-    public void saveStates(List<? extends Component> windows) {
+    public void saveStates(List<Storable> windows) {
         Map<String, String> states = new HashMap<>();
-        for (Component component : windows) {
-            if (component instanceof Storable window) {
-                window.save(states);
-            }
+        for (Storable storable : windows) {
+            storable.save(states);
         }
-
         try (OutputStream outputStream = new FileOutputStream(confPath)) {
             for (Map.Entry<String, String> entry : states.entrySet()) {
                 String line = entry.getKey() + "=" + entry.getValue() + "\n";
@@ -51,7 +47,7 @@ public class State {
      *
      * @param windows Список компонентов, состояние которых нужно загрузить
      */
-    public void loadStates(List<? extends Component> windows) {
+    public void loadStates(List<Storable> windows) {
         if (!confPath.exists()) {
             try {
                 if (confPath.createNewFile()) {
@@ -73,10 +69,8 @@ public class State {
                     states.put(key, value);
                 }
             }
-            for (Component component : windows) {
-                if (component instanceof Storable window) {
-                    window.restore(states);
-                }
+            for (Storable storable : windows) {
+                storable.restore(states);
             }
         } catch (IOException e) {
             throw new RuntimeException("Не удалось прочить из файла: " + confPath.getPath());

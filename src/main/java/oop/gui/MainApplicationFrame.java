@@ -12,7 +12,7 @@ import javax.swing.*;
 
 
 import oop.log.Logger;
-import oop.serialization.State;
+import oop.serialization.StateIO;
 import oop.serialization.StateRestoreManager;
 import oop.serialization.StateSaverManager;
 import oop.serialization.Storable;
@@ -28,7 +28,7 @@ import oop.serialization.Storable;
  */
 public class MainApplicationFrame extends JFrame implements Storable {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private final State state = new State();
+    private final StateIO stateIO = new StateIO();
     private final String name = "MainApplicationFrame";
 
     /**
@@ -48,7 +48,7 @@ public class MainApplicationFrame extends JFrame implements Storable {
         addWindow(createLogWindow());
         addWindow(createGameWindow());
         setJMenuBar(generateMenuBar());
-        state.loadStates(getAllWindows());
+        stateIO.loadStates(getAllWindows());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -76,8 +76,13 @@ public class MainApplicationFrame extends JFrame implements Storable {
      *
      * @return Список внутренних окон
      */
-    private List<? extends Component> getAllWindows() {
-        List<Component> allWindows = new ArrayList<>(List.of(desktopPane.getAllFrames()));
+    private List<Storable> getAllWindows() {
+        List<Storable> allWindows = new ArrayList<>();
+        for (JInternalFrame jInternalFrame : desktopPane.getAllFrames()) {
+            if (jInternalFrame instanceof Storable storable) {
+                allWindows.add(storable);
+            }
+        }
         allWindows.add(this);
         return allWindows;
     }
@@ -92,7 +97,7 @@ public class MainApplicationFrame extends JFrame implements Storable {
                 "Выйти",
                 JOptionPane.YES_NO_OPTION);
         if (userChoice == JOptionPane.YES_OPTION) {
-            state.saveStates(getAllWindows());
+            stateIO.saveStates(getAllWindows());
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
     }
