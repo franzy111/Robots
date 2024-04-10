@@ -16,6 +16,7 @@ import oop.serialization.StateIO;
 import oop.serialization.StateRestoreManager;
 import oop.serialization.StateSaverManager;
 import oop.serialization.Storable;
+import oop.model.Robot;
 
 /*
   Что требуется сделать:
@@ -30,6 +31,7 @@ public class MainApplicationFrame extends JFrame implements Storable {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final StateIO stateIO = new StateIO();
     private final String name = "MainApplicationFrame";
+    private final Robot robot = new Robot();
 
     /**
      * Конструктор для создания главного окна приложения
@@ -42,11 +44,10 @@ public class MainApplicationFrame extends JFrame implements Storable {
         setBounds(inset, inset,
                 screenSize.width - inset * 2,
                 screenSize.height - inset * 2);
-
         setContentPane(desktopPane);
 
         addWindow(createLogWindow());
-        addWindow(createGameWindow());
+        addWindow(createGameWindow(robot));
         setJMenuBar(generateMenuBar());
         stateIO.loadStates(getAllWindows());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -64,8 +65,8 @@ public class MainApplicationFrame extends JFrame implements Storable {
      *
      * @return Окно игры
      */
-    private JInternalFrame createGameWindow() {
-        GameWindow gameWindow = new GameWindow();
+    private JInternalFrame createGameWindow(Robot robot) {
+        GameWindow gameWindow = new GameWindow(robot);
         gameWindow.setSize(400, 400);
         gameWindow.setLocation(0, 0);
         return gameWindow;
