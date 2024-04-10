@@ -48,6 +48,7 @@ public class MainApplicationFrame extends JFrame implements Storable {
 
         addWindow(createLogWindow());
         addWindow(createGameWindow(robot));
+        addWindow(createCoordinatesWindow());
         setJMenuBar(generateMenuBar());
         stateIO.loadStates(getAllWindows());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -58,6 +59,13 @@ public class MainApplicationFrame extends JFrame implements Storable {
             }
         });
 
+    }
+
+    private JInternalFrame createCoordinatesWindow() {
+        CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
+        coordinatesWindow.setSize(350, 350);
+        coordinatesWindow.setLocation(10, 20);
+        return coordinatesWindow;
     }
 
     /**
