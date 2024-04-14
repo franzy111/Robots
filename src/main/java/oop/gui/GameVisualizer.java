@@ -42,7 +42,8 @@ public class GameVisualizer extends JPanel implements Observer {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                m_controller.setTargetPosition(e.getPoint());
+                m_controller.setTargetPositionRobot(e.getPoint());
+                setTargetPosition(e.getPoint());
                 repaint();
             }
         });

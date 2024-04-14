@@ -24,7 +24,7 @@ public class GameController {
         m_robot.onModelUpdateEvent();
     }
 
-    public void setTargetPosition(Point point) {
+    public void setTargetPositionRobot(Point point) {
         m_robot.setTargetPosition(point.x, point.y);
     }
 }
