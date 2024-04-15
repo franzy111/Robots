@@ -60,7 +60,11 @@ public class MainApplicationFrame extends JFrame implements Storable {
         });
 
     }
-
+    /**
+     * Создает окно координат робота
+     *
+     * @return Окно с координатами
+     */
     private JInternalFrame createCoordinatesWindow() {
         CoordinatesWindow coordinatesWindow = new CoordinatesWindow(robot);
         coordinatesWindow.setSize(350, 350);

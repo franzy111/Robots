@@ -10,33 +10,20 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel implements Observer {
-    private final Timer m_timer = initTimer();
-
-    private static Timer initTimer() {
-        Timer timer = new Timer("events generator", true);
-        return timer;
-    }
-
-    private Robot robot;
     private final GameController m_controller;
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100;
     private volatile double m_robotDirection = 0;
-
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
 
     public GameVisualizer(Robot robot) {
-        this.robot = robot;
         robot.addObserver(this);
         m_controller = new GameController(robot);
         addMouseListener(new MouseAdapter() {
@@ -111,11 +98,13 @@ public class GameVisualizer extends JPanel implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o.equals(robot))
+        if (o instanceof Robot robot)
             if (arg.equals("Robot moved")) {
                 m_robotPositionX = robot.getM_robotPositionX();
                 m_robotPositionY = robot.getM_robotPositionY();
                 m_robotDirection = robot.getM_robotDirection();
+                m_targetPositionX = robot.getM_targetPositionX();
+                m_targetPositionY = robot.getM_targetPositionY();
                 onRedrawEvent();
             }
     }

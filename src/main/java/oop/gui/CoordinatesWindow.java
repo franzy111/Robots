@@ -11,17 +11,19 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * Окно, отображающее координаты робота.
+ */
 public class CoordinatesWindow extends JInternalFrame implements Storable, Observer {
     private final String name = "CoordinatesWindow";
-    private Robot robot;
-    private JTextArea jTextArea = new JTextArea();
+    private final JTextArea jTextArea = new JTextArea();
+
     public CoordinatesWindow(Robot robot) {
         super("Координаты робота", true, true, true, true);
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(jTextArea, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
-        this.robot = robot;
         robot.addObserver(this);
     }
 
@@ -59,8 +61,8 @@ public class CoordinatesWindow extends JInternalFrame implements Storable, Obser
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o.equals(robot))
-            if (arg.equals("Robot moved")){
+        if (o instanceof Robot robot)
+            if (arg.equals("Robot moved")) {
                 jTextArea.setText("x: " + robot.getM_robotPositionX() + " y: " + robot.getM_robotPositionY());
             }
     }
