@@ -69,13 +69,13 @@ public class CircularQueue<T> {
      * @return подсписок элементов
      */
     public Iterable<T> subList(int startFrom, int indexTo) {
-        if (startFrom < 0 || startFrom > capacity || indexTo < 0 || indexTo > capacity) {
+        if (startFrom < 0 || startFrom > size() || indexTo < 0 || indexTo > size()) {
             throw new IndexOutOfBoundsException("Index out of range");
         }
-        int subListCapacity = indexTo - startFrom + 1;
+        int subListCapacity = indexTo - startFrom;
         List<T> subList = new ArrayList<>(subListCapacity);
         for (int i = 0; i < subListCapacity; i++) {
-            subList.add(take(i));
+            subList.add(size < capacity ? queue[i + startFrom] : queue[(size + i + startFrom) % capacity]);
         }
         return subList;
     }
