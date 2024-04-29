@@ -1,7 +1,9 @@
 package oop.log;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Что починить:
@@ -17,18 +19,18 @@ public class LogWindowSource {
 
     // private ArrayList<LogEntry> m_messages;
     private final CircularQueue<LogEntry> m_messages;
-    private final ArrayList<LogChangeListener> m_listeners;
+    private final ArrayList<WeakReference<LogChangeListener>> m_listeners;
     private volatile LogChangeListener[] m_activeListeners;
 
     public LogWindowSource(int iQueueLength) {
         m_iQueueLength = iQueueLength;
-        m_messages = new CircularQueue<>(iQueueLength);
+        m_messages = new CircularQueue<>(m_iQueueLength);
         m_listeners = new ArrayList<>();
     }
 
     public void registerListener(LogChangeListener listener) {
         synchronized (m_listeners) {
-            m_listeners.add(listener);
+            m_listeners.add(new WeakReference<>(listener));
             m_activeListeners = null;
         }
     }
@@ -37,6 +39,13 @@ public class LogWindowSource {
         synchronized (m_listeners) {
             m_listeners.remove(listener);
             m_activeListeners = null;
+            for (WeakReference<LogChangeListener> cur : m_listeners) {
+                if (cur.get() == listener) {
+                    m_listeners.remove(cur);
+                    m_activeListeners = null;
+                    break;
+                }
+            }
         }
     }
 
@@ -47,7 +56,14 @@ public class LogWindowSource {
         if (activeListeners == null) {
             synchronized (m_listeners) {
                 if (m_activeListeners == null) {
-                    activeListeners = m_listeners.toArray(new LogChangeListener[0]);
+                    List<LogChangeListener> tmp = new ArrayList<>();
+                    for (WeakReference<LogChangeListener> cur : m_listeners) {
+                        LogChangeListener listener = cur.get();
+                        if (listener != null) {
+                            tmp.add(listener);
+                        }
+                    }
+                    activeListeners = tmp.toArray(new LogChangeListener[0]);
                     m_activeListeners = activeListeners;
                 }
             }
