@@ -14,9 +14,6 @@ public class RobotsProgram {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 */
-
-            UIManager.put("OptionPane.yesButtonText", "Да");
-            UIManager.put("OptionPane.noButtonText", "Нет");
         } catch (Exception e) {
             e.printStackTrace();
         }

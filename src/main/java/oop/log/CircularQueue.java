@@ -68,7 +68,7 @@ public class CircularQueue<T> {
      * @param indexTo   конечный индекс подсписка
      * @return подсписок элементов
      */
-    public Iterable<T> subList(int startFrom, int indexTo) {
+    public synchronized Iterable<T> subList(int startFrom, int indexTo) {
         if (startFrom < 0 || startFrom > size() || indexTo < 0 || indexTo > size()) {
             throw new IndexOutOfBoundsException("Index out of range");
         }
