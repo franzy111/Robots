@@ -53,7 +53,7 @@ public class GameWindow extends JInternalFrame implements Storable, Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof LangManager && LangManager.PROPERTY_LANG.equals(arg)) {
+        if (o instanceof LangManager && arg.equals(LangManager.PROPERTY_LANG)) {
             setTitle(control.getLocale("GAME_WINDOW"));
         }
     }

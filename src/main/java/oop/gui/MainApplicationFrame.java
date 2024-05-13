@@ -294,6 +294,9 @@ public class MainApplicationFrame extends JFrame implements Storable, Observer {
                 translate();
         }
     }
+    /**
+     * Перевод элементов на текущий язык.
+     */
     private void translate(){
         this.switchLang.setText(control.getLocale("FRAME_SWITCH_LANG"));
         this.lookAndFeelMenu.setText(control.getLocale("FRAME_DISPLAY_MODE"));

@@ -69,7 +69,7 @@ public class CoordinatesWindow extends JInternalFrame implements Storable, Obser
             if (arg.equals("Robot moved")) {
                 jTextArea.setText("x: " + robot.getM_robotPositionX() + " y: " + robot.getM_robotPositionY());
             }
-        if (o instanceof LangManager && LangManager.PROPERTY_LANG.equals(arg)) {
+        if (o instanceof LangManager && arg.equals(LangManager.PROPERTY_LANG)) {
             setTitle(control.getLocale("ROBOT_COORDINATES_WINDOW"));
         }
     }

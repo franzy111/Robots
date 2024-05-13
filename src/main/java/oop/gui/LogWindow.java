@@ -75,7 +75,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Stor
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof LangManager && LangManager.PROPERTY_LANG.equals(arg)) {
+        if (o instanceof LangManager && arg.equals(LangManager.PROPERTY_LANG)) {
             setTitle(control.getLocale("LOG_WINDOW"));
         }
     }
