@@ -11,6 +11,7 @@ import javax.swing.*;
 
 
 import oop.locale.LangManager;
+import oop.locale.Retranslate;
 import oop.log.Logger;
 import oop.serialization.StateIO;
 import oop.serialization.StateRestoreManager;
@@ -22,23 +23,20 @@ import oop.model.Robot;
 /**
  * Главное окно приложения.
  */
-public class MainApplicationFrame extends JFrame implements Storable, Observer {
+public class MainApplicationFrame extends JFrame implements Storable, Retranslate {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final StateIO stateIO = new StateIO();
     private final String name = "MainApplicationFrame";
     private final Robot robot = new Robot();
     private final LangManager control = LangManager.getInstance();
     private static Locale currentLang = new Locale("ru");
-    private JMenu switchLang, lookAndFeelMenu, testMenu, quitMenu;
-    private JMenuItem switchLangRu, switchLangEn, quitMenuItem, systemLookAndFeelItem,
-            crossplatformLookAndFeelItem, logMessageItem;
+
     /**
      * Конструктор для создания главного окна приложения
      */
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
-        control.addObserver(this);
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -47,7 +45,7 @@ public class MainApplicationFrame extends JFrame implements Storable, Observer {
         try {
             UIManager.put("OptionPane.yesButtonText",
                     control.getLocale("YES_BUTTON"));
-            UIManager.put("OptionPane.noButtonText",  control.getLocale("NO_BUTTON"));
+            UIManager.put("OptionPane.noButtonText", control.getLocale("NO_BUTTON"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,6 +65,7 @@ public class MainApplicationFrame extends JFrame implements Storable, Observer {
         });
 
     }
+
     /**
      * Создает окно координат робота
      *
@@ -185,33 +184,38 @@ public class MainApplicationFrame extends JFrame implements Storable, Observer {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        switchLang = new JMenu(control.getLocale("FRAME_SWITCH_LANG"));
+        JMenu switchLang = new JMenu(control.getLocale("FRAME_SWITCH_LANG"));
         switchLang.setMnemonic(KeyEvent.VK_V);
         switchLang.getAccessibleContext().setAccessibleDescription(control.getLocale("FRAME_SWITCH_LANG"));
         {
-            switchLangRu = new JMenuItem(control.getLocale("LANG_RU"), KeyEvent.VK_S);
+            JMenuItem switchLangRu = new JMenuItem(control.getLocale("LANG_RU"), KeyEvent.VK_S);
             switchLangRu.setMnemonic(KeyEvent.VK_V);
             switchLangRu.addActionListener((event) -> {
                 currentLang = new Locale("ru");
-                control.setLocale(currentLang);
+                if (control.wasChange(currentLang)) {
+                    control.setLocale(currentLang, this);
+                }
+
             });
-            switchLangEn = new JMenuItem(control.getLocale("LANG_EN"), KeyEvent.VK_S);
+            JMenuItem switchLangEn = new JMenuItem(control.getLocale("LANG_EN"), KeyEvent.VK_S);
             switchLangEn.setMnemonic(KeyEvent.VK_V);
             switchLangEn.addActionListener((event) -> {
                 currentLang = new Locale("en");
-                control.setLocale(currentLang);
+                if (control.wasChange(currentLang)) {
+                    control.setLocale(currentLang, this);
+                }
             });
             switchLang.add(switchLangRu);
             switchLang.add(switchLangEn);
         }
 
-        lookAndFeelMenu = new JMenu(control.getLocale("FRAME_DISPLAY_MODE"));
+        JMenu lookAndFeelMenu = new JMenu(control.getLocale("FRAME_DISPLAY_MODE"));
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
                 control.getLocale("FRAME_MANAGE_DISPLAY_MODE"));
 
         {
-            systemLookAndFeelItem = new JMenuItem(control.getLocale("FRAME_SYS_SCHEME"), KeyEvent.VK_S);
+            JMenuItem systemLookAndFeelItem = new JMenuItem(control.getLocale("FRAME_SYS_SCHEME"), KeyEvent.VK_S);
             systemLookAndFeelItem.addActionListener((event) -> {
                 setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 this.invalidate();
@@ -220,7 +224,7 @@ public class MainApplicationFrame extends JFrame implements Storable, Observer {
         }
 
         {
-            crossplatformLookAndFeelItem = new JMenuItem(control.getLocale("FRAME_UNI_SCHEME"), KeyEvent.VK_S);
+            JMenuItem crossplatformLookAndFeelItem = new JMenuItem(control.getLocale("FRAME_UNI_SCHEME"), KeyEvent.VK_S);
             crossplatformLookAndFeelItem.addActionListener((event) -> {
                 setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                 this.invalidate();
@@ -228,21 +232,21 @@ public class MainApplicationFrame extends JFrame implements Storable, Observer {
             lookAndFeelMenu.add(crossplatformLookAndFeelItem);
         }
 
-        testMenu = new JMenu(control.getLocale("FRAME_TESTS"));
+        JMenu testMenu = new JMenu(control.getLocale("FRAME_TESTS"));
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(
                 control.getLocale("FRAME_TEST_COMMANDS"));
 
         {
-            logMessageItem = new JMenuItem(control.getLocale("FRAME_MES_LOG"), KeyEvent.VK_S);
+            JMenuItem logMessageItem = new JMenuItem(control.getLocale("FRAME_MES_LOG"), KeyEvent.VK_S);
             logMessageItem.addActionListener((event) -> Logger.debug(control.getLocale("LOG_MES")));
             testMenu.add(logMessageItem);
         }
-        quitMenu = new JMenu(control.getLocale("FRAME_QUIT"));
+        JMenu quitMenu = new JMenu(control.getLocale("FRAME_QUIT"));
         quitMenu.setMnemonic(KeyEvent.VK_T);
         quitMenu.getAccessibleContext().setAccessibleDescription(control.getLocale("FRAME_APP_QUIT"));
         {
-            quitMenuItem = new JMenuItem(control.getLocale("FRAME_APP_QUIT"), KeyEvent.VK_S);
+            JMenuItem quitMenuItem = new JMenuItem(control.getLocale("FRAME_APP_QUIT"), KeyEvent.VK_S);
             quitMenuItem.addActionListener((event) -> {
                 WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
                 Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
@@ -279,34 +283,10 @@ public class MainApplicationFrame extends JFrame implements Storable, Observer {
     }
 
     /**
-     * This method is called whenever the observed object is changed. An
-     * application calls an {@code Observable} object's
-     * {@code notifyObservers} method to have all the object's
-     * observers notified of the change.
-     *
-     * @param o   the observable object.
-     * @param arg an argument passed to the {@code notifyObservers}
-     *            method.
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        if (o instanceof LangManager && LangManager.PROPERTY_LANG.equals(arg)) {
-                translate();
-        }
-    }
-    /**
      * Перевод элементов на текущий язык.
      */
-    private void translate(){
-        this.switchLang.setText(control.getLocale("FRAME_SWITCH_LANG"));
-        this.lookAndFeelMenu.setText(control.getLocale("FRAME_DISPLAY_MODE"));
-        this.testMenu.setText(control.getLocale("FRAME_TESTS"));
-        this.quitMenu.setText(control.getLocale("FRAME_QUIT"));
-        this.switchLangRu.setText(control.getLocale("LANG_RU"));
-        this.switchLangEn.setText(control.getLocale("LANG_EN"));
-        this.quitMenuItem.setText(control.getLocale("FRAME_APP_QUIT"));
-        this.systemLookAndFeelItem.setText(control.getLocale("FRAME_SYS_SCHEME"));
-        this.crossplatformLookAndFeelItem.setText(control.getLocale("FRAME_UNI_SCHEME"));
-        this.logMessageItem.setText(control.getLocale("FRAME_MES_LOG"));
+    @Override
+    public void translate() {
+        setJMenuBar(generateMenuBar());
     }
 }

@@ -1,6 +1,7 @@
 package oop.gui;
 
 import oop.locale.LangManager;
+import oop.locale.Retranslate;
 import oop.model.Robot;
 import oop.serialization.StateRestoreManager;
 import oop.serialization.StateSaverManager;
@@ -15,7 +16,7 @@ import java.util.Observer;
 /**
  * Окно, отображающее координаты робота.
  */
-public class CoordinatesWindow extends JInternalFrame implements Storable, Observer {
+public class CoordinatesWindow extends JInternalFrame implements Storable, Observer, Retranslate {
     private final String name = "CoordinatesWindow";
     private final JTextArea jTextArea = new JTextArea();
     private static final LangManager control = LangManager.getInstance();
@@ -23,7 +24,6 @@ public class CoordinatesWindow extends JInternalFrame implements Storable, Obser
     public CoordinatesWindow(Robot robot) {
         super(control.getLocale("ROBOT_COORDINATES_WINDOW"), true, true,
                 true, true);
-        control.addObserver(this);
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(jTextArea, BorderLayout.CENTER);
         getContentPane().add(panel);
@@ -69,8 +69,13 @@ public class CoordinatesWindow extends JInternalFrame implements Storable, Obser
             if (arg.equals("Robot moved")) {
                 jTextArea.setText("x: " + robot.getM_robotPositionX() + " y: " + robot.getM_robotPositionY());
             }
-        if (o instanceof LangManager && arg.equals(LangManager.PROPERTY_LANG)) {
-            setTitle(control.getLocale("ROBOT_COORDINATES_WINDOW"));
-        }
+    }
+
+    /**
+     * Перевод на текущий язык.
+     */
+    @Override
+    public void translate() {
+        setTitle(control.getLocale("ROBOT_COORDINATES_WINDOW"));
     }
 }

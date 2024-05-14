@@ -1,15 +1,12 @@
 package oop.locale;
 
-import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.ResourceBundle;
+import java.awt.*;
+import java.util.*;
 
 /**
  * Класс для управления локализацией.
  */
-public class LangManager extends Observable {
-    public static final String PROPERTY_LANG = "PROPERTY_LANG";
+public class LangManager{
     private Locale currentLang = new Locale("ru");
     private static ResourceBundle resourceBundle;
     private LangManager() {
@@ -37,20 +34,24 @@ public class LangManager extends Observable {
      *
      * @param newLang Новый язык приложения.
      */
-    public void setLocale(Locale newLang) {
-        if (!currentLang.equals(newLang)) {
-            currentLang = newLang;
-            resourceBundle = ResourceBundle.getBundle("locale", newLang);
-            setChanged();
-            notifyObservers(PROPERTY_LANG);
-            clearChanged();
+    public boolean wasChange(Locale newLang) {
+        return !currentLang.equals(newLang);
+    }
+
+    public void setLocale(Locale newLang, Component components) {
+        currentLang = newLang;
+        resourceBundle = ResourceBundle.getBundle("locale", newLang);
+        if (components instanceof Retranslate retranslate) {
+            retranslate.translate();
+        }
+        if (components instanceof Container container) {
+            for(Component component : container.getComponents()) {
+                setLocale(newLang, component);
+            }
         }
     }
 
-    @Override
-    public void addObserver(Observer observer) {
-        super.addObserver(observer);
-    }
+
 
     private static class ControlLangHolder {
         private static final LangManager INSTANCE = new LangManager();
