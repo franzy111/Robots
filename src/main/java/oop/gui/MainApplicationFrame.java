@@ -287,6 +287,14 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
      */
     @Override
     public void translate() {
+        try {
+            UIManager.put("OptionPane.yesButtonText",
+                    control.getLocale("YES_BUTTON"));
+            UIManager.put("OptionPane.noButtonText", control.getLocale("NO_BUTTON"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setJMenuBar(generateMenuBar());
     }
 }
