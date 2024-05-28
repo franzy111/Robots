@@ -3,6 +3,7 @@ package oop.gui;
 import oop.locale.LangManager;
 import oop.locale.Retranslate;
 import oop.model.Robot;
+import oop.model.RobotBehavior;
 import oop.serialization.StateRestoreManager;
 import oop.serialization.StateSaverManager;
 import oop.serialization.Storable;
@@ -21,7 +22,7 @@ public class CoordinatesWindow extends JInternalFrame implements Storable, Obser
     private final JTextArea jTextArea = new JTextArea();
     private static final LangManager control = LangManager.getInstance();
 
-    public CoordinatesWindow(Robot robot) {
+    public CoordinatesWindow(RobotBehavior robot) {
         super(control.getLocale("ROBOT_COORDINATES_WINDOW"), true, true,
                 true, true);
         JPanel panel = new JPanel(new BorderLayout());
@@ -65,7 +66,7 @@ public class CoordinatesWindow extends JInternalFrame implements Storable, Obser
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof Robot robot)
+        if (o instanceof RobotBehavior robot)
             if (arg.equals("Robot moved")) {
                 jTextArea.setText("x: " + robot.getM_robotPositionX() + " y: " + robot.getM_robotPositionY());
             }

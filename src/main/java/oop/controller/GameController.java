@@ -1,6 +1,6 @@
 package oop.controller;
 
-import oop.model.Robot;
+import oop.model.RobotBehavior;
 
 import java.awt.*;
 import java.util.Timer;
@@ -10,7 +10,7 @@ import java.util.TimerTask;
  * Контроллер игры.
  */
 public class GameController {
-    private final Robot m_robot;
+    private final RobotBehavior m_robot;
     private final Timer m_timer = new Timer("events generator", true);
 
     /**
@@ -18,7 +18,7 @@ public class GameController {
      *
      * @param robot Робот, которым управляет контроллер.
      */
-    public GameController(Robot robot) {
+    public GameController(RobotBehavior robot) {
         m_robot = robot;
         m_timer.schedule(new TimerTask() {
             @Override

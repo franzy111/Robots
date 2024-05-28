@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -13,6 +15,7 @@ import javax.swing.*;
 import oop.locale.LangManager;
 import oop.locale.Retranslate;
 import oop.log.Logger;
+import oop.model.RobotBehavior;
 import oop.serialization.StateIO;
 import oop.serialization.StateRestoreManager;
 import oop.serialization.StateSaverManager;
@@ -27,7 +30,7 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final StateIO stateIO = new StateIO();
     private final String name = "MainApplicationFrame";
-    private final Robot robot = new Robot();
+    private final RobotBehavior robot = new Robot();
     private final LangManager control = LangManager.getInstance();
     private static Locale currentLang = new Locale("ru");
 
@@ -50,9 +53,10 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         setContentPane(desktopPane);
         addWindow(createLogWindow());
-        addWindow(createGameWindow(robot));
+        addWindow(createGameWindow(new GameVisualizer(robot)));
         addWindow(createCoordinatesWindow());
         setJMenuBar(generateMenuBar());
         stateIO.loadStates(getAllWindows());
@@ -83,8 +87,8 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
      *
      * @return Окно игры
      */
-    private JInternalFrame createGameWindow(Robot robot) {
-        GameWindow gameWindow = new GameWindow(robot);
+    private JInternalFrame createGameWindow(JComponent jComponent) {
+        GameWindow gameWindow = new GameWindow(jComponent);
         gameWindow.setSize(400, 400);
         gameWindow.setLocation(0, 0);
         return gameWindow;
@@ -145,6 +149,8 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
     private void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
+        revalidate();
+        repaint();
     }
 
 //    protected JMenuBar createMenuBar() {
@@ -253,6 +259,28 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
             });
             quitMenu.add(quitMenuItem);
         }
+        JMenu ret = new JMenu(control.getLocale("LOAD_GAME"));
+        ret.setMnemonic(KeyEvent.VK_L);
+        {
+            JMenuItem loadFromJarItem = new JMenuItem(control.getLocale("LOAD_GAME"), KeyEvent.VK_J);
+
+            loadFromJarItem.addActionListener((event) -> {
+                JFileChooser fileDialog = new JFileChooser();
+                int callback = fileDialog.showDialog(null, control.getLocale("LOAD_GAME"));
+                if (callback == JFileChooser.APPROVE_OPTION) {
+                    File file = fileDialog.getSelectedFile();
+                    RobotBehavior robotBehavior = null;
+                    JarFileLoader jarFileLoader = new JarFileLoader(file);
+                    robotBehavior = jarFileLoader.loadClassFromJar("oop.model.TestModel");
+                    JComponent jComponent = (JComponent) jarFileLoader.loadCompFromJar(
+                            "oop.gui.TestVisualizer",
+                            robotBehavior);
+                    loadNewRobot(jComponent);
+                }
+            });
+            ret.add(loadFromJarItem);
+        }
+        menuBar.add(ret);
         menuBar.add(switchLang);
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
@@ -297,4 +325,29 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
         }
         setJMenuBar(generateMenuBar());
     }
+
+    /**
+     * Загружает нового робота.
+     *
+     * @param jComponent Компонент, который будет использоваться для создания игрового окна.
+     */
+    public void loadNewRobot(JComponent jComponent) {
+        try {
+
+            stateIO.saveStates(getAllWindows());
+            desktopPane.removeAll();
+
+
+            addWindow(createLogWindow());
+            addWindow(createGameWindow(jComponent));
+            addWindow(createCoordinatesWindow());
+
+            stateIO.loadStates(getAllWindows());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Выбранный файл не имеет класса модели робота",
+                    "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 }

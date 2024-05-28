@@ -1,22 +1,23 @@
 package oop.model;
 
+
 /**
  * Этот класс представляет робота, который может перемещаться по двумерной плоскости.
  * Робот является наблюдаемым объектом, поэтому он может уведомлять наблюдателей об изменениях своего состояния.
  */
-public class Robot extends RobotBehavior {
+public class TestModel extends RobotBehavior {
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100;
     private volatile double m_robotDirection = 0;
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
-    private static final double maxVelocity = 0.1;
-    private static final double maxAngularVelocity = 0.003;
+    private static final double maxVelocity = 0.5;
+    private static final double maxAngularVelocity = 0.1;
 
     /**
      * Конструктор по умолчанию.
      */
-    public Robot() {
+    public TestModel() {
         super();
     }
 

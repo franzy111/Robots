@@ -1,28 +1,26 @@
 package oop.gui;
 
 import oop.locale.Retranslate;
+import oop.model.RobotBehavior;
 import oop.serialization.StateRestoreManager;
 import oop.serialization.StateSaverManager;
 import oop.serialization.Storable;
-import oop.model.Robot;
 import oop.locale.LangManager;
 
 import java.awt.*;
 import java.util.Map;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 
 public class GameWindow extends JInternalFrame implements Storable, Retranslate {
     private final String name = "GameWindow";
     private static final LangManager control = LangManager.getInstance();
 
-    public GameWindow(Robot robot) {
+    public GameWindow(JComponent jComponent) {
         super(control.getLocale("GAME_WINDOW"), true, true, true, true);
-        GameVisualizer m_visualizer = new GameVisualizer(robot);
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
+        panel.add(jComponent, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
     }
@@ -45,5 +43,8 @@ public class GameWindow extends JInternalFrame implements Storable, Retranslate 
     @Override
     public void translate() {
         setTitle(control.getLocale("GAME_WINDOW"));
+    }
+    public void setBehavior(RobotBehavior robot){
+
     }
 }

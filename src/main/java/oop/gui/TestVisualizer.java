@@ -15,7 +15,7 @@ import java.util.Observer;
 
 import javax.swing.JPanel;
 
-public class GameVisualizer extends JPanel implements Observer {
+public class TestVisualizer extends JPanel implements Observer {
     private final GameController m_controller;
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100;
@@ -23,7 +23,7 @@ public class GameVisualizer extends JPanel implements Observer {
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
 
-    public GameVisualizer(RobotBehavior robot) {
+    public TestVisualizer(RobotBehavior robot) {
         robot.addObserver(this);
         m_controller = new GameController(robot);
         addMouseListener(new MouseAdapter() {
@@ -68,9 +68,9 @@ public class GameVisualizer extends JPanel implements Observer {
 
     private void drawRobot(Graphics2D g, int robotCenterX, int robotCenterY, double direction) {
         g.rotate(direction, robotCenterX, robotCenterY);
-        g.setColor(Color.MAGENTA);
+        g.setColor(Color.YELLOW);
         fillOval(g, robotCenterX, robotCenterY, 30, 10);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.BLUE);
         drawOval(g, robotCenterX, robotCenterY, 30, 10);
         g.setColor(Color.WHITE);
         fillOval(g, robotCenterX + 10, robotCenterY, 5, 5);
