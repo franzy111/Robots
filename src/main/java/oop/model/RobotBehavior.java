@@ -2,6 +2,9 @@ package oop.model;
 
 import java.util.Observable;
 
+/**
+ * Этот абстрактный класс представляет поведение робота в модели.
+ */
 public abstract class RobotBehavior extends Observable {
     /**
      * Обрабатывает событие обновления модели.

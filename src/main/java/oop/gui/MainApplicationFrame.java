@@ -271,7 +271,7 @@ public class MainApplicationFrame extends JFrame implements Storable, Retranslat
                     File file = fileDialog.getSelectedFile();
                     RobotBehavior robotBehavior = null;
                     JarFileLoader jarFileLoader = new JarFileLoader(file);
-                    robotBehavior = jarFileLoader.loadClassFromJar("oop.model.TestModel");
+                    robotBehavior = jarFileLoader.loadClassFromJar("oop.gui.TestModel");
                     JComponent jComponent = (JComponent) jarFileLoader.loadCompFromJar(
                             "oop.gui.TestVisualizer",
                             robotBehavior);
